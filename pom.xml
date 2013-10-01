@@ -1,0 +1,156 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.vast.frontend</groupId>
+        <artifactId>search-reactor</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <artifactId>search-webapp</artifactId>
+    <packaging>war</packaging>
+
+    <name>search-index</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr</artifactId>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- the war plugin needs this to be a dependency of the project for it to work -->
+        <dependency>
+            <groupId>com.vast.common</groupId>
+            <artifactId>executable-war</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <!-- use provided scope -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- use logback for logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- include any extras we've made in solr-plugins -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>search-plugins</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>search-index</finalName>
+        <plugins>
+
+            <!-- take the vanilla solr WAR and use it as a base for the customizations defined in this project -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- add a main class manifest entry so the war will be runnable -->
+                            <mainClass>com.vast.util.EmbeddedJettyServer</mainClass>
+                        </manifest>
+                    </archive>
+                    <!-- make sure the executable war bits don't get put in the lib dir -->
+                    <packagingExcludes>WEB-INF/lib/executable-war-*.jar</packagingExcludes>
+                    <dependentWarExcludes>WEB-INF/lib/*log4j*.jar,WEB-INF/lib/*slf4j*.jar</dependentWarExcludes>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.apache.solr</groupId>
+                            <artifactId>solr</artifactId>
+                        </overlay>
+                        <overlay>
+                            <groupId>com.vast.common</groupId>
+                            <artifactId>executable-war</artifactId>
+                            <type>jar</type>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+
+            <!-- Generate the files that will be deployed. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-installer</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/installer.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>search-index-${project.version}</finalName>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <!-- do not attach as a module artifact! we do not want to deploy this into maven. -->
+                            <attach>false</attach>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- this is intended for development purposes only. -->
+            <!-- if you use the maven jetty plugin to deploy a prod/test/staging instance you should feel bad and
+                 start to reconsider your life choices. -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.1.0.M0</version>
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>solr.solr.home</name>
+                            <value>${project.basedir}/src/main/config</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <!-- make solr write it's data to the target/tmp dir so the source tree doesn't get polluted -->
+                            <name>solr.data.dir</name>
+                            <value>${project.build.outputDirectory}/solr-data</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <webApp>
+                        <contextPath>/solr</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
