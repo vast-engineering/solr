@@ -1,8 +1,8 @@
 # Common functions etc. used by startService and stopService
 
 # Define service specific values.
-SERVICE_NAME="Search Index"
-SERVICE_ID=search-index
+SERVICE_NAME="Solr"
+SERVICE_ID=solr
 
 # Apply the operator passed as the first argument to each of the remaining
 # arguments in turn till one returns true. Evaluates to the value of the

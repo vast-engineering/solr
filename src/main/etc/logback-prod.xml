@@ -1,10 +1,10 @@
 <configuration>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/data/logs/search-index/search-index.log</file>
+        <file>logs/solr.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>/data/logs/search-index/search-index.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/solr.%d{yyyy-MM-dd}.log</fileNamePattern>
 
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
@@ -18,7 +18,7 @@
     <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
         <syslogHost>localhost</syslogHost>
         <facility>LOCAL1</facility>
-        <suffixPattern>search-index: [%.25thread] %-5level %.40logger{0} - %msg</suffixPattern>
+        <suffixPattern>solr: [%.25thread] %-5level %.40logger{0} - %msg</suffixPattern>
     </appender>
 
     <root level="INFO">

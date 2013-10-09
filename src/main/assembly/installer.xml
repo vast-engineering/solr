@@ -10,25 +10,6 @@
 
     <includeBaseDirectory>false</includeBaseDirectory>
 
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>.</outputDirectory>
-            <includes>
-                <include>${solr.groupId}:${solr.artifactId}</include>
-            </includes>
-            <useProjectArtifact>false</useProjectArtifact>
-            <unpack>true</unpack>
-        </dependencySet>
-        <dependencySet>
-            <outputDirectory>solr-webapp/webapp/WEB-INF/lib</outputDirectory>
-            <includes>
-                <include>com.vividsolutions:jts</include>
-            </includes>
-            <useProjectArtifact>true</useProjectArtifact>
-            <unpack>false</unpack>
-        </dependencySet>
-    </dependencySets>
-
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}</directory>
@@ -56,5 +37,26 @@
             <!--<directoryMode>644</directoryMode>-->
             <fileMode>744</fileMode>
         </fileSet>
+
+        <!-- Create a blank data directory. -->
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>data</outputDirectory>
+            <directoryMode>0750</directoryMode>
+            <excludes>
+                <exclude>*/**</exclude>
+            </excludes>
+        </fileSet>
+
+        <!-- Create a blank logs directory. -->
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>logs</outputDirectory>
+            <directoryMode>0750</directoryMode>
+            <excludes>
+                <exclude>*/**</exclude>
+            </excludes>
+        </fileSet>
+
     </fileSets>
 </assembly>

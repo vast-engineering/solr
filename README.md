@@ -1,7 +1,8 @@
 solr
 ====
 
-Production-ready maven project for Solr projects.
+Production-ready maven project for Solr projects. The output of this build is an installation archive containing
+some handy defaults as well as some utility scripts.
 
 Configure
 =========
@@ -12,16 +13,14 @@ You can setup solr configurations here:
 
 Install 
 =======
-Currently, the embedded Jetty server is only available internally to Vast.  For now, you need to setup internal Vast maven repo.  Sorry to public folks, I will try to get this fixed.
-
-```
-mvn install
-
-```
+The build process generates a tarball suitable for installation. This archive contains a default config,
+some reasonable start/stop scripts, and a logging config. This is really intended only as a boilerplate - if your
+needs are different, you should either create a new assembly descriptor or just fork and customize this repo.
 
 Start Server
 ============
-Navigate to the target/your-index-0.0.0-SNAPSHOT directory, then use the start/stop scripts.
+
+Uncompress the installation tarball somewhere, and use the start/stop scripts.
 
 *Start*
 ```
