@@ -62,7 +62,7 @@ This project sets up hooks for the environment variables to accomplish a cluster
 
 Here is a diagram
 
-![Solr Replication Diagram](https://github.com/vast-eng/solr/blob/master/docs/solr-replication.png "Solr Replication")
+![Solr Replication Diagram](https://raw.github.com/vast-eng/solr/master/docs/solr-replication.png "Solr Replication")
 
 
 
