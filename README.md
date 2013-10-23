@@ -54,3 +54,15 @@ If you do not specific a port, your server will be running on the Solr default p
 sh stop.sh
 ```
 
+Replication
+===========
+Solr replication is master-slave. [http://wiki.apache.org/solr/SolrReplication](http://wiki.apache.org/solr/SolrReplication)
+
+This project sets up hooks for the environment variables to accomplish a cluster.  Leader election is manual right now.  If the master goes down, then the data in slaves will get stale.  To fix, a new master must be elected and services restarted on all nodes, then the data source should load into the new master.  It is probably a good idea to setup a vhost for the index master and switch the pointer in the case of a failure so that upstream index data producers do not require an update to get the change.
+
+Here is a diagram
+
+![Solr Replication Diagram](https://github.com/vast-eng/solr/blob/master/docs/solr-replication.png "Solr Replication")
+
+
+
