@@ -18,13 +18,11 @@ source ./common.sh
 #     SOLR_PORT=9001 SOLR_MASTER=false SOLR_MASTER_HOST=localhost:9000 SOLR_DATA_DIR=/var/solr/index1 sh start.sh
 
 
-if [ "$SOLR_PORT" = "" ]
-then
-  SOLR_PORT=8983;
+if [ -z "$SOLR_PORT"]; then
+  SOLR_PORT=8983
 fi
 
-if [ "$SOLR_MASTER" = "true" ]
-then
+if [ -z "$SOLR_MASTER"]; then
   SOLR_MASTER=true
   SOLR_SLAVE=false
 else
@@ -32,13 +30,12 @@ else
   SOLR_SLAVE=true
 fi
 
-if [ "$SOLR_DATA_DIR" = "" ]
-then
-  SOLR_DATA_DIR = "./data"
+if [ -z "$SOLR_DATA_DIR"]; then
+  SOLR_DATA_DIR="./data"
 fi
 
-RUN_ARGS=(${JAVA_OPTIONS[@]} -Xms2048M -Xmx6G -XX:PermSize=256M -XX:MaxPermSize=512M -Dreplication.master=$SOLR_MASTER -Dreplication.slave=$SOLR_SLAVE -Dreplication.host=$SOLR_MASTER_HOST -Dlogback.configurationFile=./etc/logback-prod.xml -Dsolr.data.dir=$SOLR_DATA_DIR -Djetty.port=$SOLR_PORT -server -jar location-services.war --jetty-config=./etc/jetty.xml --context-root=solr)
-RUN_CMD=("$JAVA" ${RUN_ARGS[@]})
+RUN_ARGS=(${JAVA_OPTIONS[@]} -Xms2048M -Xmx6G -XX:PermSize=256M -XX:MaxPermSize=512M -Dreplication.master=$SOLR_MASTER -Dreplication.slave=$SOLR_SLAVE -Dreplication.host=$SOLR_MASTER_HOST -Dlogback.configurationFile=./etc/logback-prod.xml -Dsolr.data.dir=$SOLR_DATA_DIR -Djetty.port=$SOLR_PORT -server -jar executable-solr.war --jetty-config=./etc/jetty.xml --context-root=solr)
+RUN_CMD=("java" ${RUN_ARGS[@]})
 
 exec "${RUN_CMD[@]}" &> $PRGDIR/logs/stdout.log &
 disown $!
